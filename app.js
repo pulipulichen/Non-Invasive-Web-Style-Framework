@@ -14,11 +14,33 @@ app.get('/raw.html', function (req, res) {
   var fileDir = "html-template/"
   var fileList = [
     "header-1.html",
+    "style-framework.html",
     "header-2.html",
+    //"main-raw-header.html",
+    //"main.html",
     "main-raw-header.html",
     "main.html",
+    "footer.html"
+  ]
+  var data = []
+  for (var i = 0; i < fileList.length; i++) {
+    data.push(fs.readFileSync(fileDir + fileList[i], "utf8"))
+  }
+  res.set('Content-Type', 'text/html')
+  res.send(data.join("\n"));
+})
+
+app.get('/origin.html', function (req, res) {
+  var fileDir = "html-template/"
+  var fileList = [
+    "header-1.html",
+    "origin-framework.html",
+    "header-2.html",
+    //"main-raw-header.html",
+    //"main.html",
     "main-framework-header.html",
     "main.html",
+    //"main-footer.html",
     "footer.html"
   ]
   var data = []
@@ -35,11 +57,11 @@ app.get('/framework.html', function (req, res) {
     "header-1.html",
     "style-framework.html",
     "header-2.html",
-    "main-raw-header.html",
-    "main.html",
+    //"main-raw-header.html",
+    //"main.html",
     "main-framework-header.html",
     "main.html",
-    "main-footer.html",
+    //"main-footer.html",
     "footer.html"
   ]
   var data = []
@@ -66,7 +88,8 @@ app.get('/style-framework.css', function (req, res) {
   //cssReset = PuliString.countBracketStartIsNotInLineEnd(cssReset)
   cssSemantic = PuliString.reformatRules(cssSemantic)
   
-  var data = cssHeader + cssReset + cssSemantic
+  var cssExtra = fs.readFileSync(fileDir + "semantic.extra.css", "utf8")
+  var data = cssHeader + cssReset + cssSemantic + cssExtra
   
   //var data = fs.readFileSync(fileDir + "semantic.raw.css", "utf8")
   res.set('Content-Type', 'text/css')
