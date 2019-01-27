@@ -50,6 +50,8 @@ app.get('/style-framework.css', function (req, res) {
   var cssReset = fs.readFileSync(fileDir + "semantic.reset.css", "utf8")
   cssReset = PuliString.removeComment(cssReset)
   cssReset = PuliString.removeEmptyLine(cssReset)
+  //cssReset = PuliString.countBracketStartIsNotInLineEnd(cssReset)
+  cssReset = PuliString.reformatSelector(cssReset)
   
   var cssSemantic = fs.readFileSync(fileDir + "semantic.main.css", "utf8")
   
