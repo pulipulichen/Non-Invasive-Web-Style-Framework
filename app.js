@@ -96,6 +96,8 @@ app.get('/style-framework.css', function (req, res) {
   res.send(data);
 })
 
+app.use('/themes', express.static(__dirname + '/static/semantic-ui/themes'));
+
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');
 })

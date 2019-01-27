@@ -203,7 +203,10 @@ module.exports = {
       var selectorParts = selectorList[j].split(" ")
       var selectorHeader = selectorParts[0]
 
-      if (selectorHeader.trim() === "from" || selectorHeader.trim() === "to" || selectorHeader.trim().endsWith("%")) {
+      if (selectorHeader.trim() === "from" 
+              || selectorHeader.trim() === "to" 
+              || selectorHeader.trim().endsWith("%")
+              || selectorHeader.trim() === "@font-face") {
         // do nothing
       }
       else if (selectorHeader === "html" || selectorHeader === "body") {
@@ -291,11 +294,11 @@ module.exports = {
       //return styles
       
       //console.log(styles.slice(0, 30))
-      var parts = styles.split("}")
+      var parts = styles.split("}\n")
       for (var i = 0; i < parts.length; i++) {
         parts[i] = _this.reformatStyle(parts[i])
       }
-      return parts.join("}")
+      return parts.join("}\n")
     }
     
     var reformatRule = function (part) {
