@@ -2,6 +2,7 @@ var express = require('express');
 var fs = require('fs');
 var app = express();
 app.use(express.static('public'));
+var PuliString = require('./utils/puli-string.js');
 
 app.use('/static', express.static(__dirname + '/static'));
 
@@ -47,6 +48,9 @@ app.get('/style-framework.css', function (req, res) {
   
   var cssHeader = fs.readFileSync(fileDir + "semantic.header.css", "utf8")
   var cssReset = fs.readFileSync(fileDir + "semantic.reset.css", "utf8")
+  cssReset = PuliString.removeComment(cssReset)
+  cssReset = PuliString.removeEmptyLine(cssReset)
+  
   var cssSemantic = fs.readFileSync(fileDir + "semantic.main.css", "utf8")
   
   var data = cssHeader + cssReset + cssSemantic
