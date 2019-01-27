@@ -72,7 +72,7 @@ app.get('/framework.html', function (req, res) {
   res.send(data.join("\n"));
 })
 
-app.get('/style-framework.css', function (req, res) {
+app.get('/semantic.niwsf.css', function (req, res) {
   var fileDir = "static/semantic-ui/"
   
   var cssHeader = fs.readFileSync(fileDir + "semantic.header.css", "utf8")
