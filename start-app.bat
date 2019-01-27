@@ -1,3 +1,3 @@
+start http://localhost:3000/style-framework.css
 nodemon app.js
-start http://localhost:3000/
 pause
