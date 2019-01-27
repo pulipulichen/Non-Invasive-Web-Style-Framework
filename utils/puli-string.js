@@ -145,7 +145,6 @@ module.exports = {
   },
   reformatSelector: function (str) {
     var selectorHeaderList = []
-    var virtualClassName = "puli-style-framework"
     
     var styleList = str.split("}\n")
     for (var i = 0; i < styleList.length; i++) {
@@ -227,7 +226,7 @@ module.exports = {
     style = styleComponents.join("{\n")
     return style
   },
-  virtualClassName: "puli-style-framework",
+  virtualClassName: "non-invasive-web-style-framework",
   selectorHeaderList: [],
   reformatRuleSelector: function (str) {
     var output = ""
