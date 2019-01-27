@@ -1,24 +1,9 @@
 var express = require('express');
 var fs = require('fs');
 var app = express();
+app.use(express.static('public'));
 
-app.get('/jquery.js', function (req, res) {
-  var fileName = "vender/jquery/jquery-3.3.1.min.js"
-  var data = fs.readFileSync(fileName, "utf8")
-  res.send(data);
-})
-
-app.get('/semantic.js', function (req, res) {
-  var fileName = "css-framework/semantic-ui/semantic.min.js"
-  var data = fs.readFileSync(fileName, "utf8")
-  res.send(data);
-})
-
-app.get('/semantic.css', function (req, res) {
-  var fileName = "css-framework/semantic-ui/semantic.min.css"
-  var data = fs.readFileSync(fileName, "utf8")
-  res.send(data);
-})
+app.use('/static', express.static(__dirname + '/static'));
 
 app.get('/raw.html', function (req, res) {
   var fileDir = "html-template/"
@@ -33,7 +18,7 @@ app.get('/raw.html', function (req, res) {
     data.push(fs.readFileSync(fileDir + fileList[i], "utf8"))
   }
   res.set('Content-Type', 'text/html')
-  res.send(data.join(""));
+  res.send(data.join("\n"));
 })
 
 app.get('/framework.html', function (req, res) {
@@ -50,16 +35,20 @@ app.get('/framework.html', function (req, res) {
     data.push(fs.readFileSync(fileDir + fileList[i], "utf8"))
   }
   res.set('Content-Type', 'text/html')
-  res.send(data.join(""));
+  res.send(data.join("\n"));
 })
 
 app.get('/style-framework.css', function (req, res) {
-  var fileDir = "css-framework/semantic-ui/"
+  var fileDir = "static/semantic-ui/"
   
+  var cssHeader = fs.readFileSync(fileDir + "semantic.header.css", "utf8")
   var cssReset = fs.readFileSync(fileDir + "semantic.reset.css", "utf8")
-  var cssSemantic = fs.readFileSync(fileDir + "semantic.css", "utf8")
+  var cssSemantic = fs.readFileSync(fileDir + "semantic.main.css", "utf8")
   
-  var data = cssReset + cssSemantic
+  var data = cssHeader + cssReset + cssSemantic
+  
+  //var data = fs.readFileSync(fileDir + "semantic.raw.css", "utf8")
+  res.set('Content-Type', 'text/css')
   res.send(data);
 })
 
