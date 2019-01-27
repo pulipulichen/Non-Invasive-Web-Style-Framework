@@ -5,6 +5,10 @@ app.use(express.static('public'));
 
 app.use('/static', express.static(__dirname + '/static'));
 
+app.get('/', function (req, res) {
+  res.send(fs.readFileSync("index.html", "utf8"))
+})
+
 app.get('/raw.html', function (req, res) {
   var fileDir = "html-template/"
   var fileList = [
