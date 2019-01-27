@@ -15,6 +15,9 @@ app.get('/raw.html', function (req, res) {
   var fileList = [
     "header-1.html",
     "header-2.html",
+    "main-raw-header.html",
+    "main.html",
+    "main-framework-header.html",
     "main.html",
     "footer.html"
   ]
@@ -61,7 +64,7 @@ app.get('/style-framework.css', function (req, res) {
   cssSemantic = PuliString.removeCommentString(cssSemantic)
   cssSemantic = PuliString.removeEmptyLine(cssSemantic)
   //cssReset = PuliString.countBracketStartIsNotInLineEnd(cssReset)
-  cssSemantic = PuliString.reformatRuleSelector(cssSemantic)
+  cssSemantic = PuliString.reformatRules(cssSemantic)
   
   var data = cssHeader + cssReset + cssSemantic
   

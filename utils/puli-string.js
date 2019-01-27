@@ -283,5 +283,46 @@ module.exports = {
     } while (endFlag === false)
     
     return output
+  },
+  reformatRules: function (str) {
+    var parts = str.split("}\n}\n")
+    
+    var _this = this
+    var reformatStyles = function (styles) {
+      //return styles
+      
+      //console.log(styles.slice(0, 30))
+      var parts = styles.split("}")
+      for (var i = 0; i < parts.length; i++) {
+        parts[i] = _this.reformatStyle(parts[i])
+      }
+      return parts.join("}")
+    }
+    
+    var reformatRule = function (part) {
+      var ruleSplitPoint = part.lastIndexOf("}\n@")
+      var styles = parts[i].slice(0, ruleSplitPoint + 2)
+      //console.log(styles.slice(0, 20))
+      styles = reformatStyles(styles)
+      
+      var rule = parts[i].slice(ruleSplitPoint + 2, parts[i].length)
+      var ruleSelector = rule.slice(0, rule.indexOf("{\n"))
+      var ruleStyles = rule.slice(rule.indexOf("{\n")+2)
+      ruleStyles = reformatStyles(ruleStyles)
+      rule = ruleSelector + "{\n" + ruleStyles
+      
+      return styles + rule
+    }
+    
+    for (var i = 0; i < parts.length; i++) {
+      parts[i] = reformatRule(parts[i])
+      
+    }
+    //parts[(parts.length-1)] = reformatRule(parts[(parts.length-1)])
+    
+    // 最後一份，只有style
+    
+    
+    return parts.join("}\n}\n")
   }
 };
