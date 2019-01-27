@@ -32,7 +32,11 @@ app.get('/framework.html', function (req, res) {
     "header-1.html",
     "style-framework.html",
     "header-2.html",
+    "main-raw-header.html",
     "main.html",
+    "main-framework-header.html",
+    "main.html",
+    "main-footer.html",
     "footer.html"
   ]
   var data = []
@@ -54,6 +58,10 @@ app.get('/style-framework.css', function (req, res) {
   cssReset = PuliString.reformatSelector(cssReset)
   
   var cssSemantic = fs.readFileSync(fileDir + "semantic.main.css", "utf8")
+  cssSemantic = PuliString.removeCommentString(cssSemantic)
+  cssSemantic = PuliString.removeEmptyLine(cssSemantic)
+  //cssReset = PuliString.countBracketStartIsNotInLineEnd(cssReset)
+  cssSemantic = PuliString.reformatRuleSelector(cssSemantic)
   
   var data = cssHeader + cssReset + cssSemantic
   

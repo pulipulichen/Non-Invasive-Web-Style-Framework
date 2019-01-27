@@ -82,6 +82,16 @@ module.exports = {
     }
     return str.join('').slice(2, -2);
   },
+  removeCommentString: function (code) {
+    var output = []
+    var parts = code.split("/*")
+    output.push(parts[0])
+    for (var i = 1; i < parts.length; i++) {
+      var part = parts[i]
+      output.push(part.slice(part.indexOf("*/")+2, part.length))
+    }
+    return output.join("")
+  },
   removeEmptyLine: function (str) {
     var lines = str.split("\n")
     str = []
@@ -145,7 +155,7 @@ module.exports = {
       
       var styleComponents = styleList[i].split("{\n")
       if (styleComponents.length !== 2) {
-        throw "出錯了！這個{不能分割為兩個！" + styleComponents.length
+        throw "出錯了！這個{不能分割為兩個！" + styleComponents.length + " " + styleComponents[0]
       }
       
       var selectorList = styleComponents[0].split(",\n")
@@ -154,10 +164,10 @@ module.exports = {
         var selectorHeader = selectorParts[0]
         
         if (selectorHeader === "html" || selectorHeader === "body") {
-          selectorHeader = selectorHeader + " ." + virtualClassName
+          selectorHeader = selectorHeader + " ." + this.virtualClassName
         }
         else {
-          selectorHeader = "." + virtualClassName + " " + selectorHeader
+          selectorHeader = "." + this.virtualClassName + " " + selectorHeader
         }
         
         if (selectorHeaderList.indexOf(selectorHeader) === -1) {
@@ -175,5 +185,103 @@ module.exports = {
     }
     //console.log(selectorHeaderList)
     return styleList.join("}\n")
+  },
+  reformatStyle: function (style) {
+    if (style.trim() === "") {
+      return style
+    }
+    var styleComponents = style.split("{\n")
+    if (styleComponents.length === 1) {
+      return style
+    }
+    else if (styleComponents.length !== 2) {
+      console.log(style)
+      throw "出錯了！這個{不能分割為兩個！" + styleComponents.length + " " + styleComponents[0]
+    }
+
+    var selectorList = styleComponents[0].split(",\n")
+    for (var j = 0; j < selectorList.length; j++) {
+      var selectorParts = selectorList[j].split(" ")
+      var selectorHeader = selectorParts[0]
+
+      if (selectorHeader.trim() === "from" || selectorHeader.trim() === "to" || selectorHeader.trim().endsWith("%")) {
+        // do nothing
+      }
+      else if (selectorHeader === "html" || selectorHeader === "body") {
+        selectorHeader = selectorHeader + " ." + this.virtualClassName
+      }
+      else {
+        selectorHeader = "." + this.virtualClassName + " " + selectorHeader
+      }
+
+      if (this.selectorHeaderList.indexOf(selectorHeader) === -1) {
+        this.selectorHeaderList.push(selectorHeader)
+      }
+
+      selectorParts[0] = selectorHeader
+
+      selectorList[j] = selectorParts.join(" ")
+    }
+    styleComponents[0] = selectorList.join(",\n")
+
+    style = styleComponents.join("{\n")
+    return style
+  },
+  virtualClassName: "puli-style-framework",
+  selectorHeaderList: [],
+  reformatRuleSelector: function (str) {
+    var output = ""
+    var lastIndex = -1
+    var isUnderRule = false
+    var endFlag = false
+    
+    do {
+      var bracketStart = str.indexOf("{", lastIndex)
+      //console.log(lastIndex)
+      if (bracketStart === -1) {
+        break
+      }
+      isUnderRule = str.slice(bracketStart+1, str.indexOf("{", bracketStart+1)).indexOf("}") === -1
+      if (isUnderRule === true) {
+        // 處理有規則的部分
+        var ruleBracketEnd = str.indexOf("}\n}\n", lastIndex)
+        if (ruleBracketEnd < lastIndex) {
+          ruleBracketEnd = str.length
+          endFlag = true
+        }
+        var rule = str.slice(lastIndex, ruleBracketEnd+4)
+        
+        var ruleSelector = rule.slice(0, rule.indexOf("{\n"))
+        console.log(ruleSelector)
+        
+        var rules = rule.slice(rule.indexOf("{\n")+2, rule.length-1).split("}\n")
+        for (var i = 0; i < rules.length; i++) {
+          rules[i] = this.reformatStyle(rules[i])
+        }
+        
+        output = output + ruleSelector + "{\n" + rules.join("}\n") + "}"
+        
+        // 最後爬到下一個end的地方
+        lastIndex = ruleBracketEnd + 4
+      }
+      else {
+        // 處理普通的部分
+        var bracketEnd = str.indexOf("}\n", lastIndex)
+        if (bracketEnd < lastIndex) {
+          bracketEnd = str.length
+          endFlag = true
+        }
+        
+        var style = str.slice(lastIndex, bracketEnd+2)
+        output = output + this.reformatStyle(style)
+        
+        // 最後爬到下一個end的地方
+        lastIndex = bracketEnd + 2
+      }
+      
+      
+    } while (endFlag === false)
+    
+    return output
   }
 };
