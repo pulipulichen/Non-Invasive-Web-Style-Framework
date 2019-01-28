@@ -205,6 +205,7 @@ module.exports = {
 
       if (selectorHeader.trim() === "from" 
               || selectorHeader.trim() === "to" 
+              || selectorHeader.trim().startsWith("@")
               || selectorHeader.trim().endsWith("%")
               || selectorHeader.trim() === "@font-face") {
         // do nothing
